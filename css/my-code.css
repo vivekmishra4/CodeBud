@@ -1,0 +1,99 @@
+.manager {
+  border: 2px solid red;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+.manager .my-files {
+  width: 200px;
+  background-color: #333;
+  color: #fff;
+  list-style-type: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+.manager ul li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.manager ul li:hover {
+  background-color: #444;
+}
+
+.manager ul li.selected {
+  background-color: #555;
+}
+
+.line-numbers {
+  width: fit-content;
+  height: 100%;
+  overflow-y: scroll;
+  border-right: 1px solid #ccc;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+/* Hide scrollbar */
+.line-numbers::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* Optional: Hide scrollbar in Firefox */
+.line-numbers {
+  scrollbar-width: none;
+}
+
+.code-input {
+  flex-grow: 1;
+  height: 100%;
+  resize: none;
+  border: 2px solid red;
+  outline: none;
+  font-family: inherit;
+  font-size: inherit;
+  overflow-y: scroll;
+  line-height: inherit;
+}
+.manager .my-files {
+  max-height: 70%;
+  overflow-y: scroll;
+}
+.manager .colab {
+  display: none;
+  flex-direction: column;
+}
+.sender {
+  display: block;
+  color: #d3c3c3;
+  height: 1.2em;
+  font-size: x-small;
+}
+#file-upload {
+  display: none;
+}
+.autocomplete-suggestions {
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  background: #fff;
+  position: absolute;
+  z-index: 1;
+  padding-top: 20px;
+}
+.autocomplete-suggestion {
+  padding: 5px;
+  cursor: pointer;
+}
+.autocomplete-suggestion:hover {
+  background: #e0e0e0;
+}
+.autocomplete-cancel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+  cursor: pointer;
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+}

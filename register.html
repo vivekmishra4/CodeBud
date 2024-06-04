@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/authentication.css" />
+  </head>
+  <body>
+    <div class="register-container">
+      <form id="register-form">
+        <input type="email" id="regEmail" placeholder="Email" required />
+        <br />
+        <input
+          type="password"
+          id="regPassword"
+          placeholder="Password"
+          required
+        /><br />
+        <div class="message">
+          <div id="loading-spinner" class="spinner"></div>
+          <p id="register-error-message"></p>
+        </div>
+        
+        <button id="register-btn" type="button">Register</button>
+        
+      </form>
+    </div>
+    <script type="module" src="js/auth/authentication.js"></script>
+  </body>
+</html>

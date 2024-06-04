@@ -1,0 +1,63 @@
+:root{
+    --file-name-height:1.8rem;
+    --font-size-code:20px;
+    --line-height-code:23px;
+    --font-heading-size:1.5rem;
+    --font-text-size:1rem;
+    --font-small-size:0.7rem;
+
+}
+body{
+    padding-left: 3px;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+header{
+    height: 5vh;
+}
+header .menu-list{
+    width: 100%;
+    display: flex;
+    justify-content:space-between;
+    list-style-type: none;
+
+}
+.dialog-window{
+    display: none;
+    position: fixed;
+    top: 20vh;
+    left: 30vw;
+    z-index: 1;
+    width: 50vh;
+    height: 40vw;
+    background-color: blue;
+
+}
+main{
+    height: 90vh;
+}
+main .file-action{
+    height: 10%;
+}
+main .middle-section{
+    height: 60%;
+    display: flex;
+}
+
+main .bottom-window{
+    height: 22%;
+    display: flex;
+}
+.icons{
+    width: 22px;
+    height: 22px;
+    margin: auto 0;
+}
+.icons:hover{
+    background-color: rgb(110, 161, 206);
+}
+.icon-selcted{
+    background-color: blue;
+}

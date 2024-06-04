@@ -1,0 +1,13 @@
+1.offline accesiblity 
+2.live-output
+3.customizations
+4.file-management
+5.code snippets
+6.search capabilities
+7.keyboard shortcuts
+8.syntax highlighting
+9.code completion suggestions
+10.collaborative editing with chat
+    a.websocket
+    b.firebase
+    c.nodejs

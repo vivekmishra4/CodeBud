@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/my-code.css" />
+    <link rel="stylesheet" href="css/lower-window.css" />
+    <link rel="stylesheet" href="css/navigation.css" />
+    <link rel="manifest" href="/manifest.json" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul class="menu-list">
+          <li class="top-menu-item">
+            <img class="icons" src="assets/arrows-maximize.svg" id="close-btn" />
+          </li>
+          <li class="top-menu-item">
+            <img class="icons" src="assets/line-horizontal-3.svg" id="file-menu-icon"/>
+            <div class="file-menu">
+              <button class="file-menu-item" id="rename-project">Rename Project</button>
+              <button class="file-menu-item" id="open-projects">Projects</button>
+              <button class="file-menu-item" id="new-project">New project</button>
+            </div>
+          </li>
+          <li class="top-menu-item search-snippet">
+            <img class="icons" id="snippets" src="assets/code.svg"/>
+          </li>
+          <li class="top-menu-item"><img class="icons" src="assets/dark-theme.svg" id="theme-toggle"/></li>
+          <li class="top-menu-item"><img class="icons" src="assets/question-circle.svg" id="help-icon"/></li>
+          <li class="top-menu-item">
+            <a href="authentication.html" style="color: white"
+              ><img class="icons" src="assets/person-circle.svg"
+            /></a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <div class="dialog-window">
+      <button id="close-dialog">close</button>
+
+    </div>
+    <main>
+      <section class="file-action">
+        <div class="manager-ops" id="manager-ops">
+          <img id="add-file" class="icons" src="assets/add-file.svg" title="add-file">
+          <input type="file" id="file-upload" accept=".html">
+          <label for="file-upload" class="file-upload-label">
+            <img
+            class="icons"
+              src="./assets/file-upload.svg"
+              alt="upload-file"
+              title="upload file"
+            /> 
+         </label>
+          <select name="" id="select-file-type">
+            <option value=".html">HTML</option>
+            <option value=".css">CSS</option>
+            <option value=".js">JavaScript</option>
+            <option value="image/*">image</option>
+          </select>
+        </div>
+        <div class="file-ops">
+          <input id="file-name-opened"  readonly />
+          <button id="check">&check;</button>
+          <img class="icons" src="assets/more-vertical.svg" id="file-more-icon"/>
+          <div class="file-more-options">
+            <button class="file-more-item">Save</button>
+            <button class="file-more-item">Save All</button>
+            <button class="file-more-item">Rename file</button>
+            <button class="file-more-item">Delete</button>
+          </div>
+          <img class="icons" src="assets/search.svg" />
+        </div>
+      </section>
+      <section class="middle-section">
+        <div class="manager" id="manager">
+          <ul id="file-list" class="my-files">
+            <li data-file="index.html">index.html</li>
+            <li data-file="style.css">style.css</li>
+            <li data-file="script.js">script.js</li>
+          </ul>
+          <span>Online mode</span>
+          <input type="checkbox" id="toggleOnline"/>
+          <div class="colab">
+            <button id="start-colab">Start Collaboration</button>
+            <input type="text" id="project-id" placeholder="Enter Project ID">
+
+            <button id="join-colab">Join</button>
+            <button id="close-colab">Close</button>
+          </div>
+        </div>
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea
+          class="code-input"
+          id="code-input"
+          wrap="off"
+          id="code-input"
+          spellcheck="false"
+        ></textarea>
+      </section>
+      <div id="autocomplete-container" class="autocomplete-suggestions"></div>
+      <section class="bottom-window">
+        <div class="chat-interface">
+          <div class="chat-ops">
+            <img src="assets/arrows-maximize.svg" id="chat-maximize" />
+            <h2 style="display: inline">chat</h2>
+          </div>
+          <div class="messages" id="messages">
+          </div>
+          <input type="text" name="" id="message-text" placeholder="write-message" />
+          <img id="send-message" class="icons" src="assets/send.svg"/>
+        </div>
+        <div class="output">
+          <div class="output-ops">
+            <label for="live-output">live-output</label>
+            <select name="live-output" id="live-output">
+              <option value="on">on</option>
+              <option value="off">off</option>
+            </select>
+            <button id="run-btn">Run</button>
+          </div>
+          <iframe id="output-frame" frameborder="2" allowfullscreen></iframe>
+        </div>
+      </section>
+    </main>
+    <footer></footer>
+
+    <script src="js/offline-manage.js"></script>
+    <script src="/service-worker.js"></script>
+    <script src="js/code-area.js"></script>
+    <script src="js/manager.js"></script>
+    <script src="js/jszip.min.js"></script>
+    <script src="js/eruda.min.js"></script>
+    <script type="module" src="js/code-format.js"></script>
+    <script type="module" src="js/code-manage.js"></script>
+  </body>
+</html>

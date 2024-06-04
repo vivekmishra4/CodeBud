@@ -1,0 +1,44 @@
+@media (min-width:700px) {
+    header .menu-list{
+        justify-content:flex-start;
+    }
+    .menu-list .top-menu-item{
+        margin: 0 12px;
+    }
+   
+    
+}
+.manager-ops{
+    display: inline;
+    width: 30vw;
+}
+.file-ops{
+    display: inline;
+}
+.file-menu{
+    display: none;
+    background-color: tomato;
+    padding: 5px;
+    position: absolute;
+}
+.file-menu .file-menu-item{
+    display: block;
+    background-color: tomato;
+    width: 100%;
+    border: none;
+    text-align: start;
+}
+.file-more-options{
+    display: none;
+    background-color: tomato;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+}
+.file-more-options .file-more-item{
+    /* display: block; */
+    background-color: tomato;
+    width: 100%;
+    border: none;
+    text-align: start;
+}
