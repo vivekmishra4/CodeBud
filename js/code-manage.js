@@ -5,10 +5,18 @@ import {
   retrieveAllFiles,
   downloadFiles,
 } from "./store-offline.js";
-import { currentFile, files } from "./store-online.js";
+import { outputCode } from "./shared-data.js";
+import { currentFile, getFileType } from "./store-online.js";
+import { files } from "./shared-data.js";
 let codeButton = document.getElementById("run-btn");
 let outputFrame = document.getElementById("output-frame");
 let inputArea = document.getElementById("code-input");
+const fileType=document.getElementById("select-file-type");
+let htmlText="";
+let styleText="";
+let scriptText="";
+let frameCode="";
+const uploadFileTypes=['html','css','js','png','jpg','jpeg','svg'];
 
 // let fullOutput=document.getElementById("full-frame");
 // let isFullOutput=false;
@@ -18,6 +26,12 @@ let inputArea = document.getElementById("code-input");
 //   }
 
 // })
+export let uploadedFiles={
+
+}
+
+
+document.getElementById("file-upload").addEventListener("change",uploadFile)
 inputArea.addEventListener("input", updateOutput);
 let liveOutput = document.getElementById("live-output");
 liveOutput.addEventListener("change", (e) => {
@@ -30,40 +44,127 @@ liveOutput.addEventListener("change", (e) => {
 });
 
 
-eruda.init();
-let htmlText="";
-let styleText="";
-let scriptText="";
-let uploadedFiles={
-
-}
 
 let iframeDocument =
   outputFrame.contentDocument || outputFrame.contentWindow.document;
-codeButton.addEventListener("click", updateOutput);
+codeButton.addEventListener("click",()=>{
+  linker();
+  // updateOutput();
+
+} );
 function updateOutput() {
   saveDocument(currentFile);
-  iframeDocument.open();
-  iframeDocument.write(
-    `
-        <!DOCTYPE html>
-        <html>
-        <head>
-        <style>
-        ${files["style.css"]}
-        </style>
-        </head>
-        <body>
+  frameCode=`
         ${files["index.html"]}
-        <script>
-        ${files["script.js"]}
-        </script>
-        </body>
-        </html>
-        `
-  );
+        `;
+  iframeDocument.open();
+  iframeDocument.write(frameCode);
 }
+document.getElementById("open-output").addEventListener("click",()=>{
+ linker();
+ window.open("output.html");
 
+})
+
+inputArea.value=files["index.html"];
+
+function linker(){
+  //a,script,img,link:css
+  // const myScript=document.createElement("script");
+  // myScript.setAttribute("src",dataURL);
+  // document.querySelector("body").appendChild(myScript);
+  let code = inputArea.value;
+  // for (const name in uploadedFiles) {
+  //     const regex = new RegExp(name, 'g');
+  //     code = code.replace(regex, uploadedFiles[name]);
+  // }
+ 
+
+/// Replace URLs in <link> tags
+code = code.replace(/<link[^>]*?href="([^"]*?)"[^>]*?>/g, function(match, p1) {
+  let newUrl = files[p1];
+  if(newUrl){
+    var blob = new Blob([newUrl], { type: 'text/stylesheet' });
+    var url = URL.createObjectURL(blob);
+    newUrl=url;
+  }else{
+    newUrl=uploadedFiles[p1]|| p1;
+  }
+  // Construct the new tag with the updated URL
+  const newTag = match.replace(p1, newUrl);
+  return newTag;
+});
+
+// Replace URLs in <script> tags
+code = code.replace(/<script[^>]*?src="([^"]*?)"[^>]*?>[^<]*?<\/script>/g, function(match, p1) {
+  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  // Construct the new tag with the updated URL
+  const newTag = match.replace(p1, newUrl);
+  return newTag;
+});
+
+// Replace URLs in <a> tags
+code = code.replace(/<a[^>]*?href="([^"]*?)"[^>]*?>/g, function(match, p1) {
+  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  // Construct the new tag with the updated URL
+  const newTag = match.replace(p1, newUrl);
+  return newTag;
+});
+
+// Replace URLs in <img> tags
+code = code.replace(/<img[^>]*?src="([^"]*?)"[^>]*?>/g, function(match, p1) {
+  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  // Construct the new tag with the updated URL
+  const newTag = match.replace(p1, newUrl);
+  return newTag;
+});
+iframeDocument.open();
+iframeDocument.write(code);
+iframeDocument.close();
+outputCode[0]=code;
+console.log(outputCode[0]);
+localStorage.setItem('outputCode',code);
+  
+}
+function uploadFile(event){
+  const file = event.target.files[0];
+    if (file) {
+      console.log("file name is"+file.name);
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            if(!uploadFileTypes.includes(getFileType(file.name).trim())){
+              alert("You can only upload html,css,js,image the type is "+getFileType(file.name));
+              return;
+            }
+            const dataURL = e.target.result;
+            console.log(dataURL);
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.addEventListener(
+              "load",
+              () => {
+                if(files[file.name]===undefined&&uploadedFiles[file.name]===undefined){
+                  uploadedFiles[file.name]=dataURL;
+                  console.log(reader.result);
+                 
+                }else{
+                  console.log("File name already exist n"+file.name+files[file.name]+uploadedFiles[file.name]);
+          
+                }
+                
+              },
+              false,
+            );
+            
+            
+        };
+        reader.readAsDataURL(file);
+      }
+
+}
+function getText(file){
+  
+}
 
 
 function saveDocument(fileName) {

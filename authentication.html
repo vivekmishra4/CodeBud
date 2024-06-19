@@ -1,17 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <p id="auth-message"></p>
-    <button id="login"><a href="login.html">Login</a></button>
-    <button id="register"><a href="register.html">Register</a></button>
-    <div class="projects">
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="css/authentication.css" />
+  </head>
+  <body>
+    <header>
+      <button id="sign-out-button">Sign Out</button>
+      <div class="profile-container">
+        <img
+          src="assets/person-circle.svg"
+          alt="Profile Picture"
+          class="profile-picture"
+        />
+        <pre>You are not
+logged in sign in
+ to continue
+        </pre>
+        <span id="user-name"></span>
+        <span id="user-email"></span>
+      </div>
+    </header>
+    <div class="auth-container login-container">
+      <input
+        class="input-box"
+        type="email"
+        id="login-email"
+        placeholder="Email"
+        required
+        autocomplete="email"
+      />
+      <input
+        class="input-box"
+        type="password"
+        id="login-password"
+        placeholder="Password"
+        required
+      />
+      <div class="message">
+        <div id="loading-spinner" class="spinner"></div>
+        <p id="login-error-message" class=".auth-error-message"></p>
+      </div>
+      <button class="input-box" id="login-btn" type="button">Login</button>
+      <p>
+        Don't have an account?
+        <a href="register.html" id="show-register">Register here</a>
+      </p>
     </div>
-    
-</body>
+    <main>
+      <button id="edit-name" class="input-box">Edit Name</button>
+      <div class="name-change">
+        <label for="full-name">Full Name:</label>
+        <input class="input-box" type="text" id="new-name" value="John Doe" />
+        <br />
+        <button id="name-confirm" class="input-box" type="button">Confirm</button>
+      </div>
+      <button id="change-password" class="input-box">Change Password</button>
+      <div class="password-change">
+        <label for="enter-password">Current Password:</label>
+        <input class="input-box" type="password" id="enter-password" />
+        <br />
+        <label for="re-enter-password">New Password:</label>
+        <input class="input-box" type="password" id="re-enter-password" />
+        <br />
+        <button class="input-box" type="button" id="password-confirm">Confirm</button>
+        <br />
+      </div>
+      <button id="delete-account" class="input-box">Delete Account</button>
+    </main>
+    <footer>
+      <h3>Support</h3>
+      <p>codebud@gmail.com</p>
+    </footer>
+    <script type="module" src="js/authentication.js"></script>
+  </body>
 </html>

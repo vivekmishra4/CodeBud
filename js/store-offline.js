@@ -1,4 +1,4 @@
-import { files } from "./store-online.js";
+import { files } from "./shared-data.js";
 // Open or create the IndexedDB database
 let dbName;
 let dbVersion;

@@ -7,25 +7,26 @@
     <link rel="stylesheet" href="css/authentication.css" />
   </head>
   <body>
-    <div class="register-container">
+    <div class="auth-container">
       <form id="register-form">
-        <input type="email" id="regEmail" placeholder="Email" required />
-        <br />
-        <input
+        <input class="input-box" type="text" id="register-name" placeholder="Name" autocomplete="name" required />
+        <input class="input-box" type="email" id="regEmail" placeholder="Email" autocomplete="email" required />
+        <input class="input-box"
           type="password"
           id="regPassword"
           placeholder="Password"
+          autocomplete="new-password"
           required
-        /><br />
+        />
         <div class="message">
           <div id="loading-spinner" class="spinner"></div>
-          <p id="register-error-message"></p>
+          <p id="register-error-message" class="auth-error-message"></p>
         </div>
         
-        <button id="register-btn" type="button">Register</button>
+        <button class="input-box" id="register-btn" type="button">Register</button>
         
       </form>
     </div>
-    <script type="module" src="js/auth/authentication.js"></script>
+    <script type="module" src="js/register.js"></script>
   </body>
 </html>

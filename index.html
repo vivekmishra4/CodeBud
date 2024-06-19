@@ -6,18 +6,16 @@
     <title>Document</title>
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="css/my-code.css" />
-    <link rel="stylesheet" href="css/lower-window.css" />
-    <link rel="stylesheet" href="css/navigation.css" />
+    <link rel="stylesheet" href="css/bottom-window.css" />
+    <link rel="stylesheet" href="css/top-bar.css" />
     <link rel="manifest" href="/manifest.json" />
+    <script src="js/eruda.min.js"></script>
   </head>
   <body>
     <header>
       <nav>
         <ul class="menu-list">
-          <li class="top-menu-item">
-            <img class="icons" src="assets/arrows-maximize.svg" id="close-btn" />
-          </li>
-          <li class="top-menu-item">
+          <li class="top-menu-item" data-nav="menu">
             <img class="icons" src="assets/line-horizontal-3.svg" id="file-menu-icon"/>
             <div class="file-menu">
               <button class="file-menu-item" id="rename-project">Rename Project</button>
@@ -25,12 +23,12 @@
               <button class="file-menu-item" id="new-project">New project</button>
             </div>
           </li>
-          <li class="top-menu-item search-snippet">
+          <li class="top-menu-item search-snippet" data-nav="menu">
             <img class="icons" id="snippets" src="assets/code.svg"/>
           </li>
-          <li class="top-menu-item"><img class="icons" src="assets/dark-theme.svg" id="theme-toggle"/></li>
-          <li class="top-menu-item"><img class="icons" src="assets/question-circle.svg" id="help-icon"/></li>
-          <li class="top-menu-item">
+          <li class="top-menu-item" data-nav="menu"><img class="icons" src="assets/dark-theme.svg" id="theme-toggle"/></li>
+          <li class="top-menu-item" data-nav="menu"><img class="icons" src="assets/question-circle.svg" id="help-icon"/></li>
+          <li class="top-menu-item" data-nav="menu">
             <a href="authentication.html" style="color: white"
               ><img class="icons" src="assets/person-circle.svg"
             /></a>
@@ -38,15 +36,14 @@
         </ul>
       </nav>
     </header>
-    <div class="dialog-window">
-      <button id="close-dialog">close</button>
-
-    </div>
+   
     <main>
       <section class="file-action">
+        <img class="icons" src="assets/arrows-maximize.svg" id="close-btn" title="Expand Manager" />
         <div class="manager-ops" id="manager-ops">
+            
           <img id="add-file" class="icons" src="assets/add-file.svg" title="add-file">
-          <input type="file" id="file-upload" accept=".html">
+          <input type="file" id="file-upload" accept=".html,.css,.js,.png,.jpeg,.jpg,.svg">
           <label for="file-upload" class="file-upload-label">
             <img
             class="icons"
@@ -55,22 +52,17 @@
               title="upload file"
             /> 
          </label>
-          <select name="" id="select-file-type">
-            <option value=".html">HTML</option>
-            <option value=".css">CSS</option>
-            <option value=".js">JavaScript</option>
-            <option value="image/*">image</option>
-          </select>
         </div>
         <div class="file-ops">
-          <input id="file-name-opened"  readonly />
+          
+          <input id="file-name-opened"  value="index.html" readonly />
           <button id="check">&check;</button>
           <img class="icons" src="assets/more-vertical.svg" id="file-more-icon"/>
           <div class="file-more-options">
-            <button class="file-more-item">Save</button>
-            <button class="file-more-item">Save All</button>
-            <button class="file-more-item">Rename file</button>
-            <button class="file-more-item">Delete</button>
+            <button class="file-more-item" id="file-download">Download</button>
+            <button class="file-more-item" id="file-download-all">Download All</button>
+            <button class="file-more-item" id="file-rename">Rename file</button>
+            <button class="file-more-item" id="file-delete">Delete</button>
           </div>
           <img class="icons" src="assets/search.svg" />
         </div>
@@ -78,9 +70,7 @@
       <section class="middle-section">
         <div class="manager" id="manager">
           <ul id="file-list" class="my-files">
-            <li data-file="index.html">index.html</li>
-            <li data-file="style.css">style.css</li>
-            <li data-file="script.js">script.js</li>
+            <li data-file="index.html" id="index.html">index.html</li>
           </ul>
           <span>Online mode</span>
           <input type="checkbox" id="toggleOnline"/>
@@ -93,6 +83,9 @@
           </div>
         </div>
         <div class="line-numbers" id="line-numbers">1</div>
+        <dialog class="dialog-window">
+          <button id="close-dialog">close</button>
+        </dialog>
         <textarea
           class="code-input"
           id="code-input"
@@ -103,17 +96,11 @@
       </section>
       <div id="autocomplete-container" class="autocomplete-suggestions"></div>
       <section class="bottom-window">
-        <div class="chat-interface">
+        <div class="bottom-window-ops">
+          <img src="assets/arrows-maximize.svg" id="chat-maximize" class="icons" title="expand-chat"/>
           <div class="chat-ops">
-            <img src="assets/arrows-maximize.svg" id="chat-maximize" />
             <h2 style="display: inline">chat</h2>
           </div>
-          <div class="messages" id="messages">
-          </div>
-          <input type="text" name="" id="message-text" placeholder="write-message" />
-          <img id="send-message" class="icons" src="assets/send.svg"/>
-        </div>
-        <div class="output">
           <div class="output-ops">
             <label for="live-output">live-output</label>
             <select name="live-output" id="live-output">
@@ -121,19 +108,29 @@
               <option value="off">off</option>
             </select>
             <button id="run-btn">Run</button>
+            <button id="open-output">open</button>
           </div>
-          <iframe id="output-frame" frameborder="2" allowfullscreen></iframe>
+        </div>
+        <div class="bottom-window-content">
+          <div class="chat-interface">
+            <div class="messages" id="messages">
+            </div>
+            <input type="text" name="" id="message-text" placeholder="write-message" />
+            <img id="send-message" class="icons" src="assets/send.svg"/>
+          </div>
+          <div class="output">
+            <iframe id="output-frame" frameborder="2" allowfullscreen></iframe>
+          </div>
         </div>
       </section>
     </main>
-    <footer></footer>
 
     <script src="js/offline-manage.js"></script>
     <script src="/service-worker.js"></script>
-    <script src="js/code-area.js"></script>
-    <script src="js/manager.js"></script>
+    <script type="module" src="js/top-bar.js"></script>
     <script src="js/jszip.min.js"></script>
-    <script src="js/eruda.min.js"></script>
+    <script src="js/bottom-window.js"></script>
+   
     <script type="module" src="js/code-format.js"></script>
     <script type="module" src="js/code-manage.js"></script>
   </body>

@@ -1,19 +1,19 @@
 import { currentFile,getFileType } from "./store-online.js";
 const htmlTags = [
-  "html",
-  "head",
-  "title",
-  "body",
-  "script",
-  "style",
-  "div",
-  "span",
-  "h1",
-  "h2",
-  "h3",
-  "p",
-  "a",
-  "img",
+  "<html>",
+  "<head>",
+  "<title>",
+  "<body>",
+  "<script>",
+  "<style>",
+  "<div>",
+  "<span>",
+  "<h1>",
+  "<h2>",
+  "<h3>",
+  "<p>",
+  "<a>",
+  "<img/>",
 ];
 const cssProperties = [
   "color",
@@ -37,9 +37,25 @@ const jsKeywords = [
   "return",
 ];
 
-const textarea = document.querySelector("#code-input");
+let lineNumbers = document.getElementById("line-numbers");
+const textarea = document.getElementById("code-input");
 const autocompleteContainer = document.getElementById("autocomplete-container");
 
+lineNumbers.addEventListener("scroll",syncLines)
+textarea.addEventListener("scroll", syncScroll);
+textarea.addEventListener("input", () => {
+  let n = textarea.value.split("\n").length;
+  lineNumbers.innerHTML = "";
+  for (let i = 1; i <= n; i++) {
+    lineNumbers.innerHTML += i + "<br>";
+  }
+});
+function syncScroll() {
+  lineNumbers.scrollTop = textarea.scrollTop;
+}
+function syncLines(){
+  textarea.scrollTop=lineNumbers.scrollTop
+}
 textarea.addEventListener("input", function (e) {
   if (e.target.value.trim() == "") {
     return;
@@ -52,15 +68,7 @@ textarea.addEventListener("input", function (e) {
 });
 
 textarea.addEventListener("keydown", function (e) {
-  if (e.key === "ArrowDown") {
-    const firstSuggestion = autocompleteContainer.querySelector(
-      ".autocomplete-suggestion"
-    );
-    if (firstSuggestion) {
-      firstSuggestion.focus();
-    }
-    e.preventDefault();
-  } else if (e.key === "Tab") {
+   if (e.key === "Tab") {
     const firstSuggestion = autocompleteContainer.querySelector(
       ".autocomplete-suggestion"
     );
@@ -134,7 +142,6 @@ function showSuggestions(suggestions, textarea, cursorPosition) {
     autocompleteContainer.style.display = "none";
   }
 }
-
 function insertSuggestion(textarea, suggestion, cursorPosition) {
   const value = textarea.value;
   const beforeCursor = value.substring(0, cursorPosition);
@@ -154,10 +161,11 @@ function insertSuggestion(textarea, suggestion, cursorPosition) {
   textarea.focus();
 }
 textarea.addEventListener("keydown", (e) => {
-    if (e.key === "<") {
+    if (getFileType(currentFile)!="html"&&e.key === "<") {
       e.preventDefault();
       insertPairedCharacters(">", e.key);
-    } else if (e.key === "{") {
+    }
+     if (e.key === "{") {
       e.preventDefault();
       insertPairedCharacters("}", e.key);
     } else if (e.key === "(") {

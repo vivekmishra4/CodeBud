@@ -1,0 +1,34 @@
+.chat-ops{
+    width: 12rem;
+    align-self: center;
+    justify-self: flex-start;
+}
+.output-ops{
+    align-self: center;
+}
+.bottom-window-content .output {
+    flex-grow: 1;
+  }
+  
+/* .chat-interface .chat-ops{
+    height: 2rem;
+
+} */
+.chat-interface .messages{
+    border: 2px solid palevioletred;
+    height: 100%;
+    overflow: scroll;
+}
+.chat-interface .messages .my-message{
+    display: block;
+}
+
+.output .output-ops{
+    margin-top: 0.1em;
+    margin-left: 2em;
+    height: 2em;
+}
+#output-frame{
+    resize: vertical;
+    width: 100%;
+}

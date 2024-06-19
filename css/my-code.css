@@ -1,11 +1,5 @@
-.manager {
-  border: 2px solid red;
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-}
 .manager .my-files {
-  width: 200px;
+  width: 100%;
   background-color: #333;
   color: #fff;
   list-style-type: none;
@@ -24,43 +18,24 @@
 .manager ul li.selected {
   background-color: #555;
 }
-
-.line-numbers {
-  width: fit-content;
-  height: 100%;
-  overflow-y: scroll;
-  border-right: 1px solid #ccc;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-/* Hide scrollbar */
+/* Hide scrollbar for numbers*/
 .line-numbers::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
 
-/* Optional: Hide scrollbar in Firefox */
+/* Hide scrollbar in Firefox for numbers */
 .line-numbers {
   scrollbar-width: none;
 }
 
-.code-input {
-  flex-grow: 1;
-  height: 100%;
-  resize: none;
-  border: 2px solid red;
-  outline: none;
-  font-family: inherit;
-  font-size: inherit;
-  overflow-y: scroll;
-  line-height: inherit;
-}
 .manager .my-files {
   max-height: 70%;
   overflow-y: scroll;
 }
 .manager .colab {
   display: none;
+  width: 100%;
   flex-direction: column;
 }
 .sender {
@@ -72,6 +47,8 @@
 #file-upload {
   display: none;
 }
+
+
 .autocomplete-suggestions {
   border: 1px solid #ccc;
   max-height: 150px;
