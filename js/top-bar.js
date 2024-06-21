@@ -1,13 +1,21 @@
 import { downloadFile, downloadFiles } from "./store-offline.js";
 import { currentFile } from "./store-online.js";
-
+import { mySnippets } from "./shared-data.js";
 let isDialog=false;
 let snippets=document.getElementById("snippets");
+let snippetLang="html";
 let dialogWindow=document.querySelector(".dialog-window");
 snippets.addEventListener("click",()=>{
   dialogWindow.innerHTML=`
+  <div class="dialog-header">
    <button id="close-dialog">close</button>
   <input type="text" id="snippet-search" placeholder="Search for a snippet...">
+  <select name="snippet-lang" id="snippet-lang">
+      <option value="html">html</option>
+      <option value="css">css</option>
+      <option value="js">js</option>
+  </select>
+  </div>
   <div id="snippet-list" class="snippet-list"></div>
   `;
   document.getElementById('close-dialog').addEventListener('click', toggleDialog);
@@ -16,15 +24,10 @@ snippets.addEventListener("click",()=>{
   
 });
 
-const mySnippets = [
-  { language: 'JavaScript', name: 'Array Filter', code: 'const filteredArray = array.filter(item => item > 0);' },
-  { language: 'Python', name: 'List Comprehension', code: '[x for x in range(10) if x % 2 == 0]' },
-  { language: 'Java', name: 'Print Hello', code: 'System.out.println("Hello, World!");' },
-];
-
 function filterSnippets() {
+  let selectedLang=document.getElementById("snippet-lang").value;
   const query = document.getElementById('snippet-search').value.toLowerCase();
-  const filteredSnippets = mySnippets.filter(snippet => snippet.name.toLowerCase().includes(query));
+  const filteredSnippets = mySnippets[selectedLang].filter(snippet => snippet.name.toLowerCase().includes(query));
   displaySnippets(filteredSnippets);
 }
 
@@ -57,7 +60,7 @@ function displaySnippets(snippetArray) {
 
 function copyToClipboard(code) {
   navigator.clipboard.writeText(code).then(() => {
-      alert('Code copied to clipboard!');
+      document.querySelector(".copy-btn").innerText="copied";
   }, () => {
       alert('Failed to copy code to clipboard.');
   });
@@ -84,16 +87,24 @@ function toggleDialog(){
   }
 }
 
-let isDarkTheme=false;
-document.getElementById("theme-toggle").addEventListener("click",()=>{
-  if(isDarkTheme){
-    isDarkTheme=false;
-  }
-  else{
-    isDarkTheme=true;
-  }
 
-})
+let isDarkTheme = localStorage.getItem("theme") === "dark";
+if (isDarkTheme) {
+    document.body.classList.add("dark-theme");
+}
+
+document.getElementById("theme-toggle").addEventListener("click", () => {
+    if (isDarkTheme) {
+        isDarkTheme = false;
+        localStorage.setItem("theme", "light");
+        document.body.classList.remove("dark-theme");
+    } else {
+        isDarkTheme = true;
+        localStorage.setItem("theme", "dark");
+        document.body.classList.add("dark-theme");
+    }
+});
+
 let Mysnippets=[{type:"html",name:"button",code:""},
   {type:"html",name:"button"}
 ]
@@ -142,20 +153,27 @@ closeButton.addEventListener("click",()=>{
     }  
 }
 );
-let moreOpen=false;
-let moreOptions=document.querySelector(".file-more-options");
-document.getElementById("file-more-icon").addEventListener("click",toggleMore);
-function toggleMore(){
-    console.log("Hii");
-    if(moreOpen){
-        moreOptions.style.display="none";
-        moreOpen=false;
-    }else{
-        moreOptions.style.display="inline-block";
-        moreOpen=true;
-    }
+let moreOptions = document.querySelector(".file-more-options");
+let moreOpen = false; // Variable to track if moreOptions is open
 
+document.getElementById("file-more-icon").addEventListener("click", toggleMore);
+
+function toggleMore(e) {
+    // Toggle the visibility and position of moreOptions
+    if (moreOpen) {
+        // Close moreOptions
+        moreOptions.style.display = "none";
+        moreOpen = false;
+    } else {
+        // Open moreOptions
+        moreOptions.style.display = "inline-block";
+        // Position moreOptions relative to e.target (file-more-icon)
+        moreOptions.style.right = `${e.target.getBoundingClientRect().right}px`;
+        moreOptions.style.top = `${e.target.getBoundingClientRect().bottom}px`; // Adjust positioning as needed
+        moreOpen = true;
+    }
 }
+
 const fileSelector=document.getElementById("file-upload");
 
 const fileDownloadButton=document.getElementById("file-download");

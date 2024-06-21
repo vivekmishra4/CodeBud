@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('You are currently offline. Please connect to the internet to use this application.');
     }
 });
-
+let isDarkTheme = localStorage.getItem("theme") === "dark";
+if (isDarkTheme) {
+    document.body.classList.add("dark-theme");
+}
 function register(auth, createUserWithEmailAndPassword, updateProfile) {
     const name = document.getElementById('register-name').value;
     const email = document.getElementById("regEmail").value;

@@ -16,7 +16,7 @@
 }
 
 .manager ul li.selected {
-  background-color: #555;
+  background-color: var(--window-color);
 }
 /* Hide scrollbar for numbers*/
 .line-numbers::-webkit-scrollbar {

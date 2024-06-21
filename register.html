@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="css/authentication.css" />
   </head>
   <body>
+    <div class="profile-container">
+      <img
+        src="assets/person-circle.svg"
+        alt="Profile Picture"
+        class="profile-picture"
+      />
+   
+      <span id="user-name"></span>
+      <span id="user-email"></span>
+    </div>
     <div class="auth-container">
+      <pre class="login-text">Register here to continue
+                        </pre>
       <form id="register-form">
         <input class="input-box" type="text" id="register-name" placeholder="Name" autocomplete="name" required />
         <input class="input-box" type="email" id="regEmail" placeholder="Email" autocomplete="email" required />
@@ -27,6 +39,7 @@
         
       </form>
     </div>
+   
     <script type="module" src="js/register.js"></script>
   </body>
 </html>

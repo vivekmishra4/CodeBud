@@ -1,12 +1,24 @@
+:root{
+  --bg-color: #ffffff;
+  --text-color-primary: #333333;
+}
 *{
     padding: 0;
     margin: 0;
 }
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    background-color:var(--bg-color);
+    color: var(--text-color-primary);
     margin: 0;
     padding: 0;
+  }
+  body.dark-theme{
+    --bg-color: #1e1e1e;
+    --text-color-primary: #d4d4d4;
+  }
+  body.dark-theme img {
+    filter: invert(100%);
   }
   header{
     height:35vh;
@@ -103,4 +115,8 @@ button:hover {
 }
 .message{
     height: 40px;
+}
+.auth-container .login-text{
+  font-size: 1.2rem;
+  text-align: center;
 }

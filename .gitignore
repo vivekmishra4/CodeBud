@@ -2,3 +2,4 @@ practice/
 .vscode/
 server/node_modules
 server/codebudproject-firebase-adminsdk-wa00b-982731a169.json
+firebaseConfig.json

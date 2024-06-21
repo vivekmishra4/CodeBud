@@ -40,7 +40,10 @@ function addFile() {
     newFile.innerText = filename;
     fileList.appendChild(newFile);
     files[filename] = "";
-    sendData(JSON.stringify({ type: "file", filename: filename, content: "" }));
+    if(isConnected){
+      sendData(JSON.stringify({ type: "file", filename: filename, content: "" }));
+    }
+    
   } else {
     alert("File name already exist");
   }

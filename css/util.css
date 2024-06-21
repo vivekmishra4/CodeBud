@@ -1,0 +1,84 @@
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    height: 1.rem;
+  }
+
+  /* Hide the default checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--text-color-secondary);
+    transition: .4s;
+    border-radius: 34px;
+  }
+
+  /* The slider before (the circle) */
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 0.9rem;
+    width: 0.9rem;
+    left: 4px;
+    bottom:0.09rem;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+  }
+
+  /* Checked state */
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+
+  /* Move the slider to the right */
+  input:checked + .slider:before {
+    transform: translateX(1.6rem);
+  }
+  .icons {
+    width: 22px;
+    height: 22px;
+    margin: auto 0;
+    transition: filter 0.3s;
+  }
+  .icons:hover {
+    background-color: rgb(110, 161, 206);
+  }
+  .icon-selcted {
+    background-color: blue;
+  }
+  .dialog-window {
+    width: 50vh;
+    height: 40vw;
+    background-color: rgb(171, 171, 208);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .dialog-window .snippet-item{
+    
+    padding-bottom: 3px;
+  }
+  .dialog-window .dialog-header{
+    position: sticky;
+    top: 0px;
+    left: 0px;
+  }
+  .dialog-window .snippet-item .snippet-name{
+    color: rgb(73, 34, 5);
+    background-color: white;
+  }

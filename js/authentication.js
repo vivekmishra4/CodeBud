@@ -1,5 +1,8 @@
 import { initializeFirebase } from './firebaseService.js';
-
+let isDarkTheme = localStorage.getItem("theme") === "dark";
+if (isDarkTheme) {
+    document.body.classList.add("dark-theme");
+}
 document.addEventListener('DOMContentLoaded', async () => {
     if (navigator.onLine) {
         const { auth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, updatePassword, deleteUser } = await initializeFirebase();

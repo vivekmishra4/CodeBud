@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/bottom-window.css" />
     <link rel="stylesheet" href="css/top-bar.css" />
     <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="css/util.css">
     <script src="js/eruda.min.js"></script>
   </head>
   <body>
@@ -21,6 +22,7 @@
               <button class="file-menu-item" id="rename-project">Rename Project</button>
               <button class="file-menu-item" id="open-projects">Projects</button>
               <button class="file-menu-item" id="new-project">New project</button>
+              <button class="file-menu-item" id="file-download-all">Download All</button>
             </div>
           </li>
           <li class="top-menu-item search-snippet" data-nav="menu">
@@ -33,6 +35,7 @@
               ><img class="icons" src="assets/person-circle.svg"
             /></a>
           </li>
+          <li><img class="icons" id="install-app" src="assets/install-svgrepo-com.svg" title="Install"/></li>
         </ul>
       </nav>
     </header>
@@ -53,27 +56,31 @@
             /> 
          </label>
         </div>
+       
         <div class="file-ops">
-          
-          <input id="file-name-opened"  value="index.html" readonly />
-          <button id="check">&check;</button>
-          <img class="icons" src="assets/more-vertical.svg" id="file-more-icon"/>
           <div class="file-more-options">
             <button class="file-more-item" id="file-download">Download</button>
-            <button class="file-more-item" id="file-download-all">Download All</button>
+           
             <button class="file-more-item" id="file-rename">Rename file</button>
             <button class="file-more-item" id="file-delete">Delete</button>
           </div>
+          <input id="file-name-opened"  value="index.html" readonly />
+          <img class="icons" src="assets/more-vertical.svg" id="file-more-icon"/>
+          
           <img class="icons" src="assets/search.svg" />
         </div>
       </section>
       <section class="middle-section">
+       
         <div class="manager" id="manager">
           <ul id="file-list" class="my-files">
             <li data-file="index.html" id="index.html">index.html</li>
           </ul>
           <span>Online mode</span>
-          <input type="checkbox" id="toggleOnline"/>
+          <label class="switch">
+            <input type="checkbox" id="toggleOnline"/>
+            <span class="slider"></span>
+          </label>
           <div class="colab">
             <button id="start-colab">Start Collaboration</button>
             <input type="text" id="project-id" placeholder="Enter Project ID">
@@ -107,8 +114,8 @@
               <option value="on">on</option>
               <option value="off">off</option>
             </select>
-            <button id="run-btn">Run</button>
-            <button id="open-output">open</button>
+            <img class="icons" id="run-btn" title="run" src="assets/code-editor-run.svg"/>
+            <img class="icons" id="open-output" src="assets/arrow-up-right-from-square-svgrepo-com.svg" title="open"/>
           </div>
         </div>
         <div class="bottom-window-content">

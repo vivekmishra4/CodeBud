@@ -5,21 +5,43 @@
   --font-heading-size: 1.5rem;
   --font-text-size: 1rem;
   --font-small-size: 0.7rem;
-  --primary-color-light:#111111;
-  --primary-color-dark:#111111;
-  --text-color-light:#111111;
-  --text-color-dark:#111111;
+  --bg-color: #ffffff;
+  --text-color-primary: #333333;
+  --text-color-secondary: #6a6a6a;
+  --window-color: #555;
+  --window-text-primary: #333333;
+  --window-text-secondary: #6a6a6a;
+  --button-bg: #007acc;
+  --button-text: #ffffff;
 }
 * {
   margin: 0;
   padding: 0;
 }
 body {
-  padding-left: 3px;
+  padding: 3px;
+  color: var(--text-color-primary);
+  background-color: var(--bg-color);
+  transition: background-color 0.3s, color 0.3s;
 }
+body.dark-theme{
+  --bg-color: #1e1e1e;
+  --text-color-primary: #d4d4d4;
+  --text-color-secondary: #9a9a9a;
+  --window-color: #555;
+  --window-text-primary: #d4d4d4;
+  --window-text-secondary: #9a9a9a;
+  --button-bg: #007acc;
+  --button-text: #d4d4d4;
+}
+body.dark-theme .icons {
+  filter: invert(100%);
+}
+
 
 header {
   height: 5vh;
+  border-bottom: 2px var(--text-color-primary) solid;
 }
 header .menu-list {
   width: 100%;
@@ -27,16 +49,7 @@ header .menu-list {
   justify-content: space-between;
   list-style-type: none;
 }
-.dialog-window {
-  width: 50vh;
-  height: 40vw;
-  background-color: blue;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
+
 main {
   height: 90vh;
 }
@@ -51,6 +64,8 @@ main .file-action .manager-ops {
 }
 main .file-action .file-ops {
   flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
 
@@ -59,7 +74,7 @@ main .middle-section {
   display: flex;
 }
 main .middle-section .manager {
-  border: 2px solid red;
+  border: 2px solid var(--text-color-primary);
   display: flex;
   width: 12rem;
   height: 100%;
@@ -78,7 +93,9 @@ main .middle-section .code-input {
   flex-grow: 1;
   height: 100%;
   resize: none;
-  border: 2px solid red;
+  background-color: var(--bg-color);
+  color: var(--text-color-primary);
+  border: 2px solid var(--text-color-primary);
   outline: none;
   font-family: inherit;
   font-size: inherit;

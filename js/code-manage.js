@@ -62,9 +62,52 @@ function updateOutput() {
 }
 document.getElementById("open-output").addEventListener("click",()=>{
  linker();
- window.open("output.html");
+ let erudaScript = iframeDocument.createElement('script');
+ erudaScript.setAttribute("src", "js/eruda.min.js");
+ iframeDocument.body.appendChild(erudaScript);
 
-})
+ // Ensure the script is loaded before initializing eruda
+ erudaScript.onload = () => {
+    //  let initScript = iframeDocument.createElement('script');
+    //  initScript.innerHTML = "eruda.init();";
+    //  iframeDocument.body.appendChild(initScript);
+
+     // After eruda is initialized, open the content in a new tab
+     setTimeout(() => {
+         openIframeContentInNewTab();
+     }, 1000); // Delay to ensure the initialization script runs
+ };
+});
+
+ function openIframeContentInNewTab() {
+     // Clone the iframe document
+     let clone = iframeDocument.cloneNode(true);
+
+     // Ensure the eruda script is included in the cloned document
+     let cloneErudaScript = clone.createElement('script');
+     cloneErudaScript.setAttribute("src", "http://127.0.0.1:5500/js/eruda.min.js");
+     clone.body.appendChild(cloneErudaScript);
+
+     // Add the initialization script to the cloned document
+     let cloneInitScript = clone.createElement('script');
+     cloneInitScript.innerHTML = "eruda.init();";
+     clone.body.appendChild(cloneInitScript);
+
+     // Serialize the cloned document's outer HTML
+     var content = clone.documentElement.outerHTML;
+
+     // Create a Blob from the content
+     var blob = new Blob([content], { type: 'text/html' });
+
+     // Create an Object URL from the Blob
+     var url = URL.createObjectURL(blob);
+
+     // Open the Object URL in a new tab
+     window.open(url, '_blank');
+
+     // Clean up by revoking the Object URL
+     setTimeout(() => URL.revokeObjectURL(url), 10000); // Delay to ensure the new tab has loaded
+ }
 
 inputArea.value=files["index.html"];
 
@@ -97,7 +140,14 @@ code = code.replace(/<link[^>]*?href="([^"]*?)"[^>]*?>/g, function(match, p1) {
 
 // Replace URLs in <script> tags
 code = code.replace(/<script[^>]*?src="([^"]*?)"[^>]*?>[^<]*?<\/script>/g, function(match, p1) {
-  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  let newUrl = files[p1];
+  if(newUrl){
+    var blob = new Blob([newUrl], { type: 'text/stylesheet' });
+    var url = URL.createObjectURL(blob);
+    newUrl=url;
+  }else{
+    newUrl=uploadedFiles[p1]|| p1;
+  }
   // Construct the new tag with the updated URL
   const newTag = match.replace(p1, newUrl);
   return newTag;
@@ -105,7 +155,14 @@ code = code.replace(/<script[^>]*?src="([^"]*?)"[^>]*?>[^<]*?<\/script>/g, funct
 
 // Replace URLs in <a> tags
 code = code.replace(/<a[^>]*?href="([^"]*?)"[^>]*?>/g, function(match, p1) {
-  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  let newUrl = files[p1];
+  if(newUrl){
+    var blob = new Blob([newUrl], { type: 'text/stylesheet' });
+    var url = URL.createObjectURL(blob);
+    newUrl=url;
+  }else{
+    newUrl=uploadedFiles[p1]|| p1;
+  }
   // Construct the new tag with the updated URL
   const newTag = match.replace(p1, newUrl);
   return newTag;
@@ -113,7 +170,14 @@ code = code.replace(/<a[^>]*?href="([^"]*?)"[^>]*?>/g, function(match, p1) {
 
 // Replace URLs in <img> tags
 code = code.replace(/<img[^>]*?src="([^"]*?)"[^>]*?>/g, function(match, p1) {
-  const newUrl = files[p1] ||uploadedFiles[p1]|| p1;
+  let newUrl = files[p1];
+  if(newUrl){
+    var blob = new Blob([newUrl], { type: 'text/stylesheet' });
+    var url = URL.createObjectURL(blob);
+    newUrl=url;
+  }else{
+    newUrl=uploadedFiles[p1]|| p1;
+  }
   // Construct the new tag with the updated URL
   const newTag = match.replace(p1, newUrl);
   return newTag;

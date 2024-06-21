@@ -11,19 +11,17 @@ let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  const installButton = document.createElement('button');
-  installButton.innerText = 'Install';
-  document.querySelector(".menu-list").appendChild(installButton);
-
+  const installButton = document.getElementById('install-app');
+  installButton.style.display="inline";
   installButton.addEventListener('click', () => {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
           if (choiceResult.outcome === 'accepted') {
               console.log('User accepted the install prompt');
-              document.querySelector(".menu-list").removeChild(installButton);
+              installButton.style.display="none";
           } else {
               console.log('User dismissed the install prompt');
-              document.querySelector(".menu-list").removeChild(installButton);
+
           }
           deferredPrompt = null;
       });

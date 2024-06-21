@@ -9,39 +9,36 @@
 
 .file-menu {
   display: none;
-  background-color: tomato;
+  background-color: var(--window-color);
+  z-index: 1;
   padding: 5px;
   position: absolute;
 }
 .file-menu .file-menu-item {
   display: block;
-  background-color: tomato;
+  background-color:var(--window-color);
   width: 100%;
   border: none;
   text-align: start;
 }
 .file-more-options {
   display: none;
-  background-color: tomato;
+  background-color:var(--window-color);
   padding: 5px;
   position: absolute;
   z-index: 1;
 }
 .file-more-options .file-more-item {
   /* display: block; */
-  background-color: tomato;
+  background-color: var(--window-color);
   width: 100%;
   border: none;
   text-align: start;
 }
-.icons {
-  width: 22px;
-  height: 22px;
-  margin: auto 0;
+#file-name-opened{
+  width: 6rem;
 }
-.icons:hover {
-  background-color: rgb(110, 161, 206);
-}
-.icon-selcted {
-  background-color: blue;
+
+#install-app{
+  display: none;
 }
