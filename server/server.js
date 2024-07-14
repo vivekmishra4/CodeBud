@@ -2,20 +2,25 @@ const express = require("express");
 const http = require("http");
 const WebSocket = require("ws");
 const admin = require("firebase-admin");
-const serviceAccount = require("./codebudproject-firebase-adminsdk-wa00b-982731a169.json");
+const serviceAccount = require("./codebudproject-firebase-adminsdk-wa00b-70861e71a6.json");
+const { type } = require("os");
 const projects = {};
 const creators = {};
 // Initialize Firebase Admin SDK
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+ databaseURL: "https://codebudproject-default-rtdb.firebaseio.com"
 });
 
 const db = admin.firestore();
+const rtdb = admin.database();
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 wss.on("connection", (ws) => {
+  console.log("connected");
+  ws.send(JSON.stringify({type:"connected"}));
   ws.on("message", (message) => {
     const data = JSON.parse(message);
 
@@ -27,6 +32,8 @@ wss.on("connection", (ws) => {
         ws.projectName = data.projectName;
         creators[data.projectId] = data.username;
         projects[ws.projectId] = projects[ws.projectId] || {};
+        console.log("start-colab");
+        ws.send(JSON.stringify({ type: "colab", content: "creator" }));
         break;
       case "join-colab":
         if (data.projectId == "" || projects[data.projectId] == undefined) {
@@ -39,6 +46,8 @@ wss.on("connection", (ws) => {
         ws.username = data.username;
         ws.userId = data.userId;
         ws.projectName = data.projectName;
+        console.log("join-colab");
+        ws.send(JSON.stringify({ type: "colab", content: "yes" }));
         sendExistingFiles(ws, ws.projectId);
         break;
       case "chat":
@@ -54,6 +63,12 @@ wss.on("connection", (ws) => {
             username: ws.username,
           })
         );
+        break;
+      case "project":
+        getProject(data.projectId);
+        break;
+      case "projects":
+        getProjects(ws.userId);
         break;
       case "file":
         if (data.projectId == "" || creators[ws.projectId] == undefined) {
@@ -85,48 +100,71 @@ wss.on("connection", (ws) => {
           break;
         }
         if (ws.username == creators[ws.projectId]) {
-          saveFilesToFirebase(ws.projectId,ws.projectName, projects[ws.projectId]).then(() => {
+          
+          saveProjectToFirebase(
+            ws.userId,
+            ws.projectId,
+            ws.projectName,
+            projects[ws.projectId]
+          ).then(() => {
             delete projects[ws.projectId];
             delete creators[ws.projectId];
+            broadcast(
+              ws.projectId,
+              JSON.stringify({
+                type: "colabClosed",
+                content: "Colab closed by Creator",
+              })
+            );
           });
         } else {
           ws.projectId = "";
         }
-        ws.close();
         break;
       case "close-connection":
+        ws.close();
         break;
       case "open-project":
         if (data.projectId == "") {
           ws.send(
             JSON.stringify({ type: "projectinvalid", content: "close-colab" })
           );
-          
         }
         break;
       case "rename-project":
         ws.projectName = data.projectName;
-        broadcast(ws.projectId, JSON.stringify({
-          type: "rename-project",
-          newName:data.newName
-        }));
+        broadcast(
+          ws.projectId,
+          JSON.stringify({
+            type: "rename-project",
+            newName: data.newName,
+          })
+        );
         break;
       case "rename-file":
-        projects[ws.projectId][data.newName]=projects[ws.projectId][data.oldName];
-        projects[ws.projectId][data.oldName]=null;
-        broadcast(ws.projectId, JSON.stringify({
-          type: "rename-file",
-          oldName: data.oldName,
-          newName:data.newName
-        }));
+        projects[ws.projectId][data.newName] =
+          projects[ws.projectId][data.oldName];
+        projects[ws.projectId][data.oldName] = null;
+        broadcast(
+          ws.projectId,
+          JSON.stringify({
+            type: "rename-file",
+            oldName: data.oldName,
+            newName: data.newName,
+          })
+        );
+        console.log("Renamed");
         break;
       case "delete-file":
-        projects[ws.projectId][data.oldName]=null;
-        broadcast(ws.projectId, JSON.stringify({
-          type: "delete-file",
-          fileName:data.fileName
-        }));
-        
+        projects[ws.projectId][data.oldName] = null;
+        broadcast(
+          ws.projectId,
+          JSON.stringify({
+            type: "delete-file",
+            fileName: data.fileName,
+          })
+        );
+
       default:
         console.error(`Unknown message type: ${data.type}`);
     }
@@ -150,24 +188,105 @@ function broadcast(projectId, message) {
     }
   });
 }
-async function saveFilesToFirebase(projectId,projectName, files) {
+async function saveProjectToFirebase(userId, projectId, projectName, files) {
+  try {
+    await saveProjectMetaToFirebase(userId, projectId, projectName);
+    await saveProjectFilesToFirestore(userId, projectId, files);
+    console.log("Project saved successfully");
+  } catch (error) {
+    console.error("Error saving project:", error);
+  }
+}
+
+async function saveProjectMetaToFirebase(userId, projectId, projectName) {
+  const projectMetaRef = rtdb.ref(`users/${userId}/projects/${projectId}`);
+  await projectMetaRef.set({ projectName });
+  console.log("Project metadata saved to Firebase Realtime Database");
+}
+async function saveProjectFilesToFirestore(userId, projectId, files) {
   const projectRef = db.collection(userId).doc(projectId);
   const filesRef = projectRef.collection("files");
   const batch = db.batch();
-  await projectRef.set({ projectName }, { merge: true });
+
   Object.keys(files).forEach((filename) => {
     if (filename && typeof filename === "string") {
       const fileRef = filesRef.doc(filename);
       batch.set(fileRef, { content: files[filename] });
-      console.log("saved", filename);
+      console.log("Saved:", filename);
     } else {
       console.error(`Invalid filename: ${filename}`);
     }
   });
 
   await batch.commit();
-  console.log("Files saved to Firebase");
+  console.log("Files saved to Firestore");
 }
+async function getAllProjects(userId) {
+  try {
+    const projectsRef = rtdb.ref(`users/${userId}/projects`);
+    const snapshot = await projectsRef.once("value");
+
+    if (snapshot.exists()) {
+      const projects = snapshot.val();
+      return projects;
+    } else {
+      console.log("No projects found for user:", userId);
+      return null;
+    }
+  } catch (error) {
+    console.error("Error retrieving projects:", error);
+    throw error;
+  }
+}
+
+// Example usage
+const userId = "1234";
+
+getAllProjects(userId)
+  .then((projects) => {
+    if (projects) {
+      console.log("Projects retrieved:", projects);
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
+async function getAllFiles(userId, projectId) {
+  try {
+    const filesRef = db.collection(userId).doc(projectId).collection("files");
+    const snapshot = await filesRef.get();
+
+    if (snapshot.empty) {
+      console.log("No files found for project:", projectId);
+      return null;
+    }
+
+    const files = {};
+    snapshot.forEach((doc) => {
+      files[doc.id] = doc.data().content;
+    });
+
+    return files;
+  } catch (error) {
+    console.error("Error retrieving files:", error);
+    throw error;
+  }
+}
+
+
+const projectId = "project123";
+
+getAllFiles(userId, projectId)
+  .then((files) => {
+    if (files) {
+      console.log("Files retrieved:", files);
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+
 server.listen(3000, () => {
   console.log("Server is listening on http://localhost:3000");
 });
