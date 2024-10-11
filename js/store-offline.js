@@ -1,27 +1,26 @@
 import { files } from "./shared-data.js";
-// Open or create the IndexedDB database
-let dbName;
-let dbVersion;
-let dbRequest;
 let db;
-function dbinit() {
-  dbName = "fileDB";
-  dbVersion = 1;
-  dbRequest = window.indexedDB.open(dbName, dbVersion);
-  dbRequest.onerror = function (event) {
-    console.error("Error opening database:", event.target.error);
-  };
+const request = indexedDB.open("MyDatabase", 1);
 
-  dbRequest.onsuccess = function (event) {
-    console.log("Database opened successfully");
-    db = event.target.result;
-  };
+request.onupgradeneeded = function(event) {
+  db = event.target.result;
+  if (!db.objectStoreNames.contains("projectMeta")) {
+    db.createObjectStore("projectMeta", { keyPath: "projectId" });
+  }
+  if (!db.objectStoreNames.contains("projectFiles")) {
+    db.createObjectStore("projectFiles", { keyPath: "projectId" });
+  }
+};
 
-  dbRequest.onupgradeneeded = function (event) {
-    db = event.target.result;
-    const objectStore = db.createObjectStore("files", { keyPath: "filename" });
-  };
-}
+request.onsuccess = function(event) {
+  db = event.target.result;
+  console.log("Database initialized");
+};
+
+request.onerror = function(event) {
+  console.error("Database error:", event.target.error);
+};
+
 
 async function downloadFile(openedDoc) {
   if (window.showSaveFilePicker) {
@@ -114,30 +113,163 @@ function saveFile(filename, content) {
     console.error("Error saving file:", event.target.error);
   };
 }
-function retrieveAllFiles() {
-  dbinit();
-  const transaction = db.transaction(["files"], "readonly");
-  const objectStore = transaction.objectStore("files");
-  const request = objectStore.getAll();
 
-  request.onsuccess = function (event) {
-    const files = event.target.result;
-    console.log("All files:", files);
-    // Do something with the array of files, e.g., display them in a list
-    return files;
-    //   files.forEach(function (file) {
-    //     console.log("File:", file.filename, "Content:", file.content);
-    //   });
+function saveProjectName(projectId, projectName) {
+  const transaction = db.transaction(["projectMeta"], "readwrite");
+  const objectStore = transaction.objectStore("projectMeta");
+
+  const projectMeta = {
+    projectId: projectId,
+    projectName: projectName
   };
 
-  request.onerror = function (event) {
-    console.error("Error retrieving files:", event.target.error);
+  const request = objectStore.put(projectMeta);
+
+  request.onsuccess = function(event) {
+    console.log("Project metadata saved successfully");
+  };
+
+  request.onerror = function(event) {
+    console.error("Error saving project metadata:", event.target.error);
   };
 }
+function saveProject(projectId, files) {
+  const transaction = db.transaction(["projectFiles"], "readwrite");
+  const objectStore = transaction.objectStore("projectFiles");
+
+  const projectFiles = {
+    projectId: projectId,
+    files: files
+  };
+
+  const request = objectStore.put(projectFiles);
+
+  request.onsuccess = function(event) {
+    console.log("Project files saved successfully");
+  };
+
+  request.onerror = function(event) {
+    console.error("Error saving project files:", event.target.error);
+  };
+}
+function getProjects(callback) {
+  const transaction = db.transaction(["projectMeta"], "readonly");
+  const objectStore = transaction.objectStore("projectMeta");
+
+  const request = objectStore.getAll();
+
+  request.onsuccess = function(event) {
+    const projectMetas = event.target.result;
+    callback(null, projectMetas);
+  };
+
+  request.onerror = function(event) {
+    callback("Error retrieving project metadata: " + event.target.error, null);
+  };
+}
+function deleteOfflineProject(projectId) {
+  const transaction = db.transaction(["projectMeta", "projectFiles"], "readwrite");
+  
+  // Deleting project metadata
+  const projectMetaObjectStore = transaction.objectStore("projectMeta");
+  const projectMetaRequest = projectMetaObjectStore.delete(projectId);
+
+  projectMetaRequest.onsuccess = function(event) {
+    console.log("Project metadata deleted successfully");
+  };
+
+  projectMetaRequest.onerror = function(event) {
+    console.error("Error deleting project metadata:", event.target.error);
+  };
+
+  // Deleting project files
+  const projectFilesObjectStore = transaction.objectStore("projectFiles");
+  const projectFilesRequest = projectFilesObjectStore.delete(projectId);
+
+  projectFilesRequest.onsuccess = function(event) {
+    console.log("Project files deleted successfully");
+  };
+
+  projectFilesRequest.onerror = function(event) {
+    console.error("Error deleting project files:", event.target.error);
+  };
+}
+
+function getProject(projectId, callback) {
+  const transaction = db.transaction(["projectFiles"], "readonly");
+  const objectStore = transaction.objectStore("projectFiles");
+
+  const request = objectStore.get(projectId);
+
+  request.onsuccess = function(event) {
+    const projectFiles = event.target.result;
+    if (projectFiles) {
+      callback(null, projectFiles);
+    } else {
+      callback("Project files not found", null);
+    }
+  };
+
+  request.onerror = function(event) {
+    callback("Error retrieving project files: " + event.target.error, null);
+  };
+}
+function getProjectName(projectId, callback) {
+  const transaction = db.transaction(["projectMeta"], "readonly");
+  const objectStore = transaction.objectStore("projectMeta");
+
+  const request = objectStore.get(projectId);
+
+  request.onsuccess = function(event) {
+    const projectMeta = event.target.result;
+    if (projectMeta) {
+      callback(null, projectMeta);
+    } else {
+      callback("Project metadata not found", null);
+    }
+  };
+
+  request.onerror = function(event) {
+    callback("Error retrieving project metadata: " + event.target.error, null);
+  };
+}
+function deleteAllProjects() {
+  const transaction = db.transaction(["projectMeta", "projectFiles"], "readwrite");
+
+  // Clearing project metadata
+  const projectMetaObjectStore = transaction.objectStore("projectMeta");
+  const projectMetaRequest = projectMetaObjectStore.clear();
+
+  projectMetaRequest.onsuccess = function(event) {
+    console.log("All project metadata deleted successfully");
+  };
+
+  projectMetaRequest.onerror = function(event) {
+    console.error("Error deleting all project metadata:", event.target.error);
+  };
+
+  // Clearing project files
+  const projectFilesObjectStore = transaction.objectStore("projectFiles");
+  const projectFilesRequest = projectFilesObjectStore.clear();
+
+  projectFilesRequest.onsuccess = function(event) {
+    console.log("All project files deleted successfully");
+  };
+
+  projectFilesRequest.onerror = function(event) {
+    console.error("Error deleting all project files:", event.target.error);
+  };
+}
+
 export {
   saveFile,
   downloadFile,
   downloadFiles,
-  retrieveAllFiles,
-  dbinit,
+  getProjects,
+  getProject,
+  getProjectName,
+  saveProject,
+  saveProjectName,
+  deleteOfflineProject,
+  deleteAllProjects
 };

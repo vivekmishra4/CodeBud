@@ -190,3 +190,14 @@ textarea.addEventListener("keydown", (e) => {
     textarea.setSelectionRange(position, position);
     textarea.focus();
   }
+  document.getElementById("code-search").addEventListener("click",()=>{
+    let a=prompt("Enter term to search");
+    let text=textarea.value.split("\n");
+    for(let i=0;i<text.length;i++){
+      if(text[i].includes(a)){
+        alert("found at line "+(i+1));
+        return;
+      }
+    }
+    alert("Term not found");
+  })
